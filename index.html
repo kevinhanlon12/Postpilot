@@ -1,444 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PostPilot AI — Instagram Posts on Autopilot</title>
+<title>PostPilot AI — Social Media Content for Every Platform, Every Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,300;1,9..144,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#05060a;--bg2:#090b10;--bg3:#0d1018;
+  --border:#0f1218;--border2:#161b24;
+  --text:#edeae2;--muted:#3a404d;--muted2:#252a35;
+  --accent:#6366f1;--pink:#e879f9;--orange:#f97316;--green:#22d3a0;--blue:#38bdf8;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;}
 
-  :root {
-    --bg: #07080a;
-    --bg2: #0d0f12;
-    --border: #151820;
-    --text: #eeeae2;
-    --muted: #4a4f5a;
-    --accent: #FF6B35;
-    --accent2: #C77DFF;
-    --green: #00C897;
-  }
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.5;}
 
-  html { scroll-behavior: smooth; }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:16px 40px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(5,6,10,.85);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-name{font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--text);}
+.logo-name span{color:var(--accent);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-link{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-link:hover{color:var(--text);}
+.nav-cta{background:var(--accent);color:#fff;border:none;
+  padding:10px 22px;border-radius:8px;font-family:'Outfit',sans-serif;
+  font-weight:600;font-size:13px;cursor:pointer;text-decoration:none;transition:all .2s;}
+.nav-cta:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:120px 24px 80px;position:relative;}
 
-  /* ── NOISE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0; opacity: 0.4;
-  }
+.hero-mesh{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.mesh-1{position:absolute;top:10%;left:20%;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(99,102,241,.15) 0%,transparent 70%);
+  animation:float1 8s ease-in-out infinite;}
+.mesh-2{position:absolute;top:20%;right:15%;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,121,249,.1) 0%,transparent 70%);
+  animation:float2 10s ease-in-out infinite;}
+.mesh-3{position:absolute;bottom:20%;left:30%;width:350px;height:350px;border-radius:50%;
+  background:radial-gradient(circle,rgba(249,115,22,.08) 0%,transparent 70%);
+  animation:float1 12s ease-in-out infinite reverse;}
+@keyframes float1{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+@keyframes float2{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(20px) scale(.95)}}
 
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 18px 40px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(7,8,10,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-  }
+.hero-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);
+  padding:8px 18px;border-radius:30px;font-size:12px;color:var(--accent);
+  font-weight:600;margin-bottom:28px;letter-spacing:.04em;
+  animation:fadeUp .7s ease both;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
-  .nav-logo {
-    display: flex; align-items: center; gap: 10px;
-    text-decoration: none;
-  }
-  .logo-mark {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-  .logo-text {
-    font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px;
-    color: var(--text); letter-spacing: -0.01em;
-  }
-  .logo-text span { color: var(--accent); }
+.hero h1{font-family:'Fraunces',serif;
+  font-size:clamp(38px,8vw,80px);font-weight:800;line-height:1.05;
+  letter-spacing:-.03em;margin-bottom:24px;
+  animation:fadeUp .7s .1s ease both;}
+.hero h1 em{font-style:italic;
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero h1 .orange{background:linear-gradient(135deg,var(--orange),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 
-  .nav-cta {
-    background: var(--accent); color: #fff; border: none;
-    padding: 10px 22px; border-radius: 8px;
-    font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
-    cursor: pointer; text-decoration: none;
-    transition: all 0.2s;
-  }
-  .nav-cta:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.hero-sub{font-size:clamp(15px,2.5vw,19px);color:var(--muted);
+  max-width:560px;line-height:1.7;margin-bottom:40px;
+  animation:fadeUp .7s .2s ease both;font-weight:400;}
 
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center;
-    padding: 120px 24px 80px;
-    position: relative;
-  }
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  margin-bottom:48px;animation:fadeUp .7s .3s ease both;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--pink));
+  color:#fff;border:none;padding:16px 32px;border-radius:12px;
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;
+  cursor:pointer;text-decoration:none;transition:all .2s;
+  box-shadow:0 0 40px rgba(99,102,241,.3);}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);
+  box-shadow:0 8px 40px rgba(99,102,241,.4);}
+.btn-ghost{background:transparent;color:var(--text);
+  border:1.5px solid var(--border2);padding:16px 32px;border-radius:12px;
+  font-family:'Outfit',sans-serif;font-weight:500;font-size:16px;
+  cursor:pointer;text-decoration:none;transition:all .2s;}
+.btn-ghost:hover{border-color:#2a2d34;}
 
-  .hero-glow {
-    position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 600px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-glow2 {
-    position: absolute; top: 30%; left: 30%;
-    width: 400px; height: 400px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(199,125,255,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
+/* PLATFORM ICONS ROW */
+.platforms-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  justify-content:center;animation:fadeUp .7s .4s ease both;}
+.p-badge{display:flex;align-items:center;gap:6px;
+  background:var(--bg2);border:1px solid var(--border2);
+  padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;
+  color:var(--muted);transition:all .2s;}
+.p-badge:hover{border-color:#2a2d34;color:var(--text);}
+.p-divider{width:1px;height:20px;background:var(--border);}
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.2);
-    padding: 8px 18px; border-radius: 30px;
-    font-size: 13px; color: var(--accent); font-weight: 500;
-    margin-bottom: 28px;
-    animation: fadeUp 0.7s ease both;
-  }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+/* STATS STRIP */
+.stats-strip{padding:60px 24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.stats-inner{max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
+.stat-item{text-align:center;padding:20px;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Fraunces',serif;font-size:42px;font-weight:800;
+  line-height:1;margin-bottom:6px;
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{font-size:13px;color:var(--muted);}
 
-  .hero h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(40px, 8vw, 76px);
-    font-weight: 800; line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 24px;
-    animation: fadeUp 0.7s 0.1s ease both;
-  }
-  .hero h1 em { font-style: italic; color: var(--accent); }
-  .hero h1 .purple { color: var(--accent2); }
+/* MARQUEE */
+.marquee-wrap{overflow:hidden;padding:28px 0;background:var(--bg2);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.marquee-track{display:flex;gap:40px;animation:marquee 25s linear infinite;width:max-content;}
+.marquee-item{display:flex;align-items:center;gap:10px;font-size:14px;
+  color:var(--muted);white-space:nowrap;font-weight:500;}
+.marquee-icon{font-size:18px;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  .hero-sub {
-    font-size: clamp(16px, 2.5vw, 20px);
-    color: var(--muted); max-width: 520px;
-    line-height: 1.7; margin-bottom: 40px;
-    animation: fadeUp 0.7s 0.2s ease both;
-    font-weight: 400;
-  }
+/* SECTION */
+section{position:relative;z-index:1;}
+.section-wrap{max-width:1000px;margin:0 auto;padding:100px 24px;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+.section-title{font-family:'Fraunces',serif;
+  font-size:clamp(28px,5vw,50px);font-weight:700;line-height:1.1;
+  letter-spacing:-.02em;margin-bottom:16px;}
+.section-title em{font-style:italic;color:var(--accent);}
+.section-sub{font-size:17px;color:var(--muted);max-width:480px;line-height:1.7;}
 
-  .hero-actions {
-    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-    margin-bottom: 56px;
-    animation: fadeUp 0.7s 0.3s ease both;
-  }
+/* PLATFORMS GRID */
+.platforms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:56px;}
+.platform-card{background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:18px;padding:28px;transition:all .25s;cursor:default;}
+.platform-card:hover{transform:translateY(-4px);border-color:var(--border2);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.platform-icon{font-size:36px;margin-bottom:16px;}
+.platform-name{font-weight:700;font-size:18px;margin-bottom:6px;}
+.platform-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.platform-tag{display:inline-block;font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:5px;letter-spacing:.04em;}
 
-  .btn-primary {
-    background: var(--accent); color: #fff; border: none;
-    padding: 16px 32px; border-radius: 12px;
-    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 16px;
-    cursor: pointer; text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 0 40px rgba(255,107,53,0.3);
-  }
-  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 8px 40px rgba(255,107,53,0.4); }
+/* LANGUAGES */
+.lang-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:56px;}
+.lang-card{background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:14px;padding:22px;text-align:center;transition:all .2s;}
+.lang-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.lang-flag{font-size:36px;margin-bottom:10px;}
+.lang-name{font-weight:700;font-size:15px;margin-bottom:3px;}
+.lang-native{font-size:12px;color:var(--muted);}
 
-  .btn-ghost {
-    background: transparent; color: var(--text);
-    border: 1.5px solid var(--border);
-    padding: 16px 32px; border-radius: 12px;
-    font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 16px;
-    cursor: pointer; text-decoration: none;
-    transition: all 0.2s;
-  }
-  .btn-ghost:hover { border-color: #333; }
+/* HOW IT WORKS */
+.steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+  background:var(--border);border-radius:18px;overflow:hidden;margin-top:56px;}
+.step-box{background:var(--bg2);padding:32px 24px;transition:background .2s;}
+.step-box:hover{background:var(--bg3);}
+.step-num{font-family:'Fraunces',serif;font-size:52px;font-weight:800;
+  color:var(--border2);line-height:1;margin-bottom:16px;transition:color .2s;}
+.step-box:hover .step-num{color:rgba(99,102,241,.2);}
+.step-icon{font-size:26px;margin-bottom:12px;}
+.step-title{font-weight:700;font-size:15px;margin-bottom:6px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6;}
 
-  /* social proof strip */
-  .hero-proof {
-    display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center;
-    animation: fadeUp 0.7s 0.4s ease both;
-  }
-  .proof-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
-  .proof-item strong { color: var(--text); }
-  .proof-divider { width: 1px; height: 16px; background: var(--border); }
+/* CONTENT TYPES */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:56px;}
+.content-card{background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:24px;transition:all .2s;}
+.content-card:hover{border-color:var(--border2);}
+.content-card-icon{font-size:28px;margin-bottom:12px;}
+.content-card-title{font-weight:700;font-size:16px;margin-bottom:6px;}
+.content-card-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.content-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.ctag{font-size:11px;background:var(--bg3);border:1px solid var(--border2);
+  color:var(--muted);padding:3px 8px;border-radius:4px;}
 
-  /* ── MOCKUP ── */
-  .mockup-section {
-    padding: 0 24px 100px;
-    display: flex; justify-content: center;
-    position: relative;
-  }
+/* WHO */
+.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:56px;}
+.who-card{background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:16px;padding:24px;text-align:center;transition:all .25s;}
+.who-card:hover{transform:translateY(-4px);border-color:var(--border2);}
+.who-emoji{font-size:36px;margin-bottom:12px;}
+.who-title{font-weight:700;font-size:14px;margin-bottom:6px;}
+.who-desc{font-size:12px;color:var(--muted);line-height:1.5;}
 
-  .phone-mockup {
-    width: 100%; max-width: 340px;
-    background: var(--bg2);
-    border: 1.5px solid var(--border);
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
-    animation: floatPhone 4s ease-in-out infinite;
-  }
-  @keyframes floatPhone {
-    0%,100% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
-  }
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:56px;}
+.testi-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:28px;}
+.stars{color:#fbbf24;font-size:13px;margin-bottom:14px;letter-spacing:2px;}
+.testi-quote{font-size:14px;color:#a0a8b8;line-height:1.7;margin-bottom:20px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.testi-name{font-weight:700;font-size:13px;}
+.testi-role{font-size:11px;color:var(--muted);}
 
-  .phone-notch {
-    height: 28px; background: #000;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .notch-pill { width: 80px; height: 10px; background: #111; border-radius: 5px; }
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:56px;}
+.price-card{background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:22px;padding:32px;position:relative;transition:all .25s;}
+.price-card:hover{transform:translateY(-4px);}
+.price-card.featured{border-color:var(--accent);
+  background:linear-gradient(160deg,rgba(99,102,241,.06),var(--bg2));
+  box-shadow:0 0 60px rgba(99,102,241,.1);}
+.featured-pill{position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;
+  font-size:10px;font-weight:800;padding:4px 16px;border-radius:20px;
+  letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
+.price-tier{font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.price-amount{font-family:'Fraunces',serif;font-size:50px;font-weight:800;
+  line-height:1;margin-bottom:4px;}
+.price-amount span{font-size:20px;font-weight:400;color:var(--muted);}
+.price-desc{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.price-features{list-style:none;margin-bottom:28px;}
+.price-features li{display:flex;align-items:flex-start;gap:8px;
+  font-size:13px;padding:8px 0;border-bottom:1px solid var(--border);line-height:1.5;}
+.price-features li:last-child{border-bottom:none;}
+.check{color:var(--green);flex-shrink:0;margin-top:1px;}
+.cross{color:var(--muted2);flex-shrink:0;margin-top:1px;}
+.price-btn{display:block;width:100%;text-align:center;
+  padding:14px;border-radius:10px;text-decoration:none;
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;
+  transition:all .2s;cursor:pointer;border:none;}
+.price-btn-main{background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;}
+.price-btn-main:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.price-btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border2);}
+.price-btn-ghost:hover{border-color:#2a2d34;}
+.price-btn-dark{background:var(--bg3);color:var(--text);}
+.price-btn-dark:hover{background:var(--border2);}
 
-  .phone-content { padding: 16px; }
-  .phone-post {
-    background: #0a0c0f; border: 1px solid #1a1d22;
-    border-radius: 14px; padding: 14px; margin-bottom: 10px;
-  }
-  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .post-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 14px; }
-  .post-name { font-size: 12px; font-weight: 600; }
-  .post-day { font-size: 10px; color: var(--muted); }
-  .post-text { font-size: 12px; color: #aaa; line-height: 1.6; margin-bottom: 8px; }
-  .post-tags { font-size: 11px; color: #4a7abb; }
-  .post-label { display: inline-block; font-size: 10px; background: rgba(255,107,53,0.1); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 600; float: right; margin-top: -4px; }
+/* FAQ */
+.faq-wrap{max-width:680px;margin:56px auto 0;}
+.faq-item{border-bottom:1px solid var(--border);padding:22px 0;cursor:pointer;}
+.faq-item:first-child{border-top:1px solid var(--border);}
+.faq-q{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  font-weight:600;font-size:15px;}
+.faq-icon{color:var(--accent);font-size:22px;flex-shrink:0;transition:transform .2s;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;margin-top:12px;display:none;}
+.faq-item.open .faq-a{display:block;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
 
-  /* ── SECTION SHARED ── */
-  section { position: relative; z-index: 1; }
+/* CTA */
+.cta-section{padding:100px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:800px;height:500px;
+  background:radial-gradient(ellipse,rgba(99,102,241,.12) 0%,transparent 70%);
+  pointer-events:none;}
+.cta-section h2{font-family:'Fraunces',serif;
+  font-size:clamp(30px,6vw,60px);font-weight:800;line-height:1.1;
+  letter-spacing:-.03em;margin-bottom:20px;position:relative;}
+.cta-section p{font-size:18px;color:var(--muted);margin-bottom:40px;position:relative;}
 
-  .section-label {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
-  }
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:40px 24px;}
+.footer-inner{max-width:1000px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--text);}
+.footer-copy{font-size:12px;color:var(--muted2);}
 
-  .section-title {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(30px, 5vw, 50px);
-    font-weight: 700; line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-  }
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:none;}
 
-  .section-sub { font-size: 17px; color: var(--muted); max-width: 500px; line-height: 1.7; }
-
-  /* ── HOW IT WORKS ── */
-  .how-section { padding: 100px 24px; max-width: 1000px; margin: 0 auto; }
-
-  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; margin-top: 60px; background: var(--border); border-radius: 20px; overflow: hidden; }
-
-  .step-card {
-    background: var(--bg2); padding: 36px 28px;
-    position: relative;
-    transition: background 0.2s;
-  }
-  .step-card:hover { background: #0f1115; }
-
-  .step-num {
-    font-family: 'Fraunces', serif; font-size: 56px; font-weight: 800;
-    color: var(--border); line-height: 1; margin-bottom: 20px;
-    transition: color 0.2s;
-  }
-  .step-card:hover .step-num { color: rgba(255,107,53,0.15); }
-
-  .step-icon { font-size: 28px; margin-bottom: 14px; }
-  .step-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
-  .step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-  /* ── RESULTS ── */
-  .results-section { padding: 100px 24px; }
-  .results-inner { max-width: 1000px; margin: 0 auto; }
-
-  .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 60px; }
-
-  .stat-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 18px; padding: 32px 24px; text-align: center;
-    transition: all 0.2s;
-  }
-  .stat-card:hover { border-color: rgba(255,107,53,0.3); transform: translateY(-4px); }
-
-  .stat-num {
-    font-family: 'Fraunces', serif; font-size: 48px; font-weight: 800;
-    line-height: 1; margin-bottom: 8px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .stat-label { font-size: 14px; color: var(--muted); }
-
-  /* ── WHO IS IT FOR ── */
-  .who-section { padding: 100px 24px; }
-  .who-inner { max-width: 1000px; margin: 0 auto; }
-
-  .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 60px; }
-
-  .who-card {
-    background: var(--bg2); border: 1.5px solid var(--border);
-    border-radius: 20px; padding: 32px;
-    transition: all 0.25s;
-    cursor: default;
-  }
-  .who-card:hover { border-color: rgba(199,125,255,0.3); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-
-  .who-emoji { font-size: 40px; margin-bottom: 16px; }
-  .who-title { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
-  .who-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
-
-  .who-tag {
-    display: inline-block; background: rgba(199,125,255,0.08);
-    border: 1px solid rgba(199,125,255,0.15); color: var(--accent2);
-    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
-  }
-
-  /* ── TESTIMONIALS ── */
-  .testi-section { padding: 100px 24px; }
-  .testi-inner { max-width: 1000px; margin: 0 auto; }
-  .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 60px; }
-
-  .testi-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 28px;
-  }
-
-  .stars { color: #FFB800; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
-  .testi-quote { font-size: 15px; color: #c0bdb8; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
-  .testi-author { display: flex; align-items: center; gap: 12px; }
-  .testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-  .testi-name { font-weight: 600; font-size: 14px; }
-  .testi-role { font-size: 12px; color: var(--muted); }
-
-  /* ── PRICING ── */
-  .pricing-section { padding: 100px 24px; }
-  .pricing-inner { max-width: 900px; margin: 0 auto; text-align: center; }
-
-  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 60px; text-align: left; }
-
-  .price-card {
-    background: var(--bg2); border: 1.5px solid var(--border);
-    border-radius: 24px; padding: 36px;
-    position: relative; transition: all 0.25s;
-  }
-  .price-card:hover { transform: translateY(-4px); }
-  .price-card.featured {
-    border-color: var(--accent);
-    background: linear-gradient(160deg, rgba(255,107,53,0.05), var(--bg2));
-    box-shadow: 0 0 60px rgba(255,107,53,0.1);
-  }
-
-  .featured-badge {
-    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
-    padding: 4px 16px; border-radius: 20px; letter-spacing: 0.08em;
-    text-transform: uppercase; white-space: nowrap;
-  }
-
-  .price-plan { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
-  .price-amount { font-family: 'Fraunces', serif; font-size: 52px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-  .price-amount span { font-size: 22px; font-weight: 400; color: var(--muted); }
-  .price-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-
-  .price-features { list-style: none; margin-bottom: 32px; }
-  .price-features li {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 14px; padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    line-height: 1.5;
-  }
-  .price-features li:last-child { border-bottom: none; }
-  .check { color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-  .cross { color: #333; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-
-  .price-btn {
-    display: block; width: 100%; text-align: center;
-    padding: 14px; border-radius: 12px; text-decoration: none;
-    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px;
-    transition: all 0.2s; cursor: pointer; border: none;
-  }
-  .price-btn-primary { background: var(--accent); color: #fff; }
-  .price-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-  .price-btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
-  .price-btn-ghost:hover { border-color: #333; }
-
-  /* ── FAQ ── */
-  .faq-section { padding: 100px 24px; }
-  .faq-inner { max-width: 680px; margin: 0 auto; }
-
-  .faq-item {
-    border-bottom: 1px solid var(--border); padding: 24px 0; cursor: pointer;
-  }
-  .faq-item:first-child { border-top: 1px solid var(--border); }
-
-  .faq-q {
-    display: flex; justify-content: space-between; align-items: center; gap: 16px;
-    font-weight: 600; font-size: 16px;
-  }
-  .faq-icon { color: var(--accent); font-size: 22px; flex-shrink: 0; transition: transform 0.2s; }
-  .faq-a { font-size: 15px; color: var(--muted); line-height: 1.7; margin-top: 14px; display: none; }
-  .faq-item.open .faq-a { display: block; }
-  .faq-item.open .faq-icon { transform: rotate(45deg); }
-
-  /* ── CTA FOOTER ── */
-  .cta-section {
-    padding: 100px 24px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .cta-glow {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    width: 700px; height: 400px;
-    background: radial-gradient(ellipse, rgba(255,107,53,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .cta-section h2 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(32px, 6vw, 60px);
-    font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
-    margin-bottom: 20px; position: relative;
-  }
-  .cta-section p { font-size: 18px; color: var(--muted); margin-bottom: 40px; position: relative; }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 16px;
-    max-width: 1100px; margin: 0 auto;
-  }
-  .footer-copy { font-size: 13px; color: var(--muted); }
-  .footer-links { display: flex; gap: 24px; }
-  .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--text); }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible { opacity: 1; transform: none; }
-
-  /* ── MARQUEE ── */
-  .marquee-wrap { overflow: hidden; padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .marquee-track {
-    display: flex; gap: 48px;
-    animation: marquee 20s linear infinite;
-    width: max-content;
-  }
-  .marquee-item { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--muted); white-space: nowrap; }
-  .marquee-item span { font-size: 20px; }
-  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  /* responsive */
-  @media (max-width: 600px) {
-    nav { padding: 14px 20px; }
-    .hero { padding: 100px 20px 60px; }
-    .steps-grid { grid-template-columns: 1fr; }
-  }
+/* RESPONSIVE */
+@media(max-width:700px){
+  nav{padding:14px 20px;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);}
+  .platforms-grid{grid-template-columns:1fr 1fr;}
+  .lang-grid{grid-template-columns:1fr 1fr;}
+  .steps-row{grid-template-columns:1fr;}
+  .content-grid{grid-template-columns:1fr;}
+  .who-grid{grid-template-columns:1fr 1fr;}
+  .testi-grid{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -446,30 +294,38 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <div class="logo-mark">📱</div>
-    <div class="logo-text">PostPilot <span>AI</span></div>
+    <div class="logo-mark">🚀</div>
+    <div class="logo-name">PostPilot <span>AI</span></div>
   </a>
-  <a href="#pricing" class="nav-cta">Start Free →</a>
+  <div class="nav-right">
+    <a href="#platforms" class="nav-link">Platforms</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+    <a href="#pricing" class="nav-cta">Start Free →</a>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-glow2"></div>
+  <div class="hero-mesh">
+    <div class="mesh-1"></div>
+    <div class="mesh-2"></div>
+    <div class="mesh-3"></div>
+  </div>
 
   <div class="hero-badge">
     <div class="badge-dot"></div>
-    Built for local businesses in Spain
+    6 Platforms · 7 Languages · Every Business · Worldwide
   </div>
 
   <h1>
-    Your Instagram.<br/>
-    <em>Written for you.</em><br/>
-    <span class="purple">Every week.</span>
+    One tool for<br/>
+    <em>every platform.</em><br/>
+    <span class="orange">every language.</span>
   </h1>
 
   <p class="hero-sub">
-    PostPilot AI generates professional English Instagram posts for your restaurant, gym, or salon — in seconds. Just copy, paste, and post.
+    PostPilot AI generates professional social media content for Instagram, TikTok, Facebook, YouTube, LinkedIn and X — in 7 languages — in seconds. Built for local businesses worldwide.
   </p>
 
   <div class="hero-actions">
@@ -477,56 +333,34 @@
     <a href="#how" class="btn-ghost">See how it works ↓</a>
   </div>
 
-  <div class="hero-proof">
-    <div class="proof-item"><span>⭐⭐⭐⭐⭐</span> <strong>4.9/5</strong> rating</div>
-    <div class="proof-divider"></div>
-    <div class="proof-item">🏪 Built for <strong>restaurants, gyms & salons</strong></div>
-    <div class="proof-divider"></div>
-    <div class="proof-item">✓ Posts in <strong>English</strong></div>
+  <div class="platforms-row">
+    <div class="p-badge">📸 Instagram</div>
+    <div class="p-badge">🎵 TikTok</div>
+    <div class="p-badge">👥 Facebook</div>
+    <div class="p-badge">▶️ YouTube</div>
+    <div class="p-badge">💼 LinkedIn</div>
+    <div class="p-badge">𝕏 Twitter</div>
   </div>
 </section>
 
-<!-- PHONE MOCKUP -->
-<div class="mockup-section">
-  <div class="phone-mockup">
-    <div class="phone-notch"><div class="notch-pill"></div></div>
-    <div class="phone-content">
-
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div style="font-size:13px;font-weight:700;">This Week's Posts</div>
-        <div style="font-size:11px;color:#4a4f5a;background:#0d0f12;padding:4px 10px;border-radius:6px;">Café Paloma · Valencia</div>
-      </div>
-
-      <div class="phone-post">
-        <div class="post-header">
-          <div class="post-avatar">☕</div>
-          <div>
-            <div class="post-name">Café Paloma</div>
-            <div class="post-day">Monday</div>
-          </div>
-          <div class="post-label">✓ Ready</div>
-        </div>
-        <p class="post-text">Monday mornings hit different when you start them right ☀️ Come in for your favourite coffee and a fresh croissant — because you deserve a great start to the week.</p>
-        <p class="post-tags">#MondayMood #CaféValencia #CoffeeLover</p>
-      </div>
-
-      <div class="phone-post">
-        <div class="post-header">
-          <div class="post-avatar">🌿</div>
-          <div>
-            <div class="post-name">Café Paloma</div>
-            <div class="post-day">Wednesday</div>
-          </div>
-          <div class="post-label">✓ Ready</div>
-        </div>
-        <p class="post-text">Mid-week treat? Yes please 🙌 Our homemade tapas are on the menu today. Stop by and let us take care of lunch — your colleagues will be jealous.</p>
-        <p class="post-tags">#ValenciaEats #LunchTime #TapasLovers</p>
-      </div>
-
-      <div style="background:#0a0c0f;border:1px dashed #1a1d22;border-radius:14px;padding:14px;text-align:center;">
-        <div style="font-size:11px;color:#4a4f5a;">+ 2 more posts this week</div>
-      </div>
-
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-inner reveal">
+    <div class="stat-item">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Social platforms supported</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">7</div>
+      <div class="stat-label">European languages</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">10s</div>
+      <div class="stat-label">To generate a full week of content</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">€19</div>
+      <div class="stat-label">Per month — cancel anytime</div>
     </div>
   </div>
 </div>
@@ -534,159 +368,205 @@
 <!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">
-    <div class="marquee-item"><span>🍽️</span> Restaurant owners</div>
-    <div class="marquee-item"><span>💪</span> Gyms & studios</div>
-    <div class="marquee-item"><span>✂️</span> Hair salons</div>
-    <div class="marquee-item"><span>💅</span> Beauty clinics</div>
-    <div class="marquee-item"><span>☕</span> Coffee shops</div>
-    <div class="marquee-item"><span>🏊</span> Swim schools</div>
-    <div class="marquee-item"><span>🧘</span> Yoga studios</div>
-    <div class="marquee-item"><span>🍕</span> Pizzerias</div>
-    <div class="marquee-item"><span>🍽️</span> Restaurant owners</div>
-    <div class="marquee-item"><span>💪</span> Gyms & studios</div>
-    <div class="marquee-item"><span>✂️</span> Hair salons</div>
-    <div class="marquee-item"><span>💅</span> Beauty clinics</div>
-    <div class="marquee-item"><span>☕</span> Coffee shops</div>
-    <div class="marquee-item"><span>🏊</span> Swim schools</div>
-    <div class="marquee-item"><span>🧘</span> Yoga studios</div>
-    <div class="marquee-item"><span>🍕</span> Pizzerias</div>
+    <div class="marquee-item"><span class="marquee-icon">🍽️</span> Restaurants</div>
+    <div class="marquee-item"><span class="marquee-icon">💪</span> Gyms</div>
+    <div class="marquee-item"><span class="marquee-icon">✂️</span> Salons</div>
+    <div class="marquee-item"><span class="marquee-icon">🛍️</span> Retail shops</div>
+    <div class="marquee-item"><span class="marquee-icon">🏨</span> Hotels</div>
+    <div class="marquee-item"><span class="marquee-icon">☕</span> Coffee shops</div>
+    <div class="marquee-item"><span class="marquee-icon">🧘</span> Yoga studios</div>
+    <div class="marquee-item"><span class="marquee-icon">🍸</span> Bars</div>
+    <div class="marquee-item"><span class="marquee-icon">🏥</span> Clinics</div>
+    <div class="marquee-item"><span class="marquee-icon">🎓</span> Schools</div>
+    <div class="marquee-item"><span class="marquee-icon">🍕</span> Pizzerias</div>
+    <div class="marquee-item"><span class="marquee-icon">🏊</span> Swim schools</div>
+    <div class="marquee-item"><span class="marquee-icon">🍽️</span> Restaurants</div>
+    <div class="marquee-item"><span class="marquee-icon">💪</span> Gyms</div>
+    <div class="marquee-item"><span class="marquee-icon">✂️</span> Salons</div>
+    <div class="marquee-item"><span class="marquee-icon">🛍️</span> Retail shops</div>
+    <div class="marquee-item"><span class="marquee-icon">🏨</span> Hotels</div>
+    <div class="marquee-item"><span class="marquee-icon">☕</span> Coffee shops</div>
+    <div class="marquee-item"><span class="marquee-icon">🧘</span> Yoga studios</div>
+    <div class="marquee-item"><span class="marquee-icon">🍸</span> Bars</div>
+    <div class="marquee-item"><span class="marquee-icon">🏥</span> Clinics</div>
+    <div class="marquee-item"><span class="marquee-icon">🎓</span> Schools</div>
+    <div class="marquee-item"><span class="marquee-icon">🍕</span> Pizzerias</div>
+    <div class="marquee-item"><span class="marquee-icon">🏊</span> Swim schools</div>
   </div>
 </div>
 
-<!-- HOW IT WORKS -->
-<section id="how" class="how-section">
-  <div class="reveal">
-    <div class="section-label">How it works</div>
-    <h2 class="section-title">Three steps.<br/>Zero effort.</h2>
-    <p class="section-sub">You spend 2 minutes setting up. We do the rest, every single week.</p>
-  </div>
-
-  <div class="steps-grid reveal">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div class="step-icon">🏪</div>
-      <div class="step-title">Tell us about your business</div>
-      <div class="step-desc">Enter your name, type of business, and the vibe you want — friendly, bold, luxury, or fun.</div>
+<!-- PLATFORMS -->
+<section id="platforms">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">All platforms</div>
+      <h2 class="section-title">Content built for<br/><em>how each platform works</em></h2>
+      <p class="section-sub">Every platform is different. PostPilot generates content optimised specifically for each one — not just the same post copy-pasted everywhere.</p>
     </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div class="step-icon">⚡</div>
-      <div class="step-title">AI writes your posts</div>
-      <div class="step-desc">In seconds, PostPilot generates a full week of tailored English Instagram captions for your business.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div class="step-icon">📋</div>
-      <div class="step-title">Copy, paste & post</div>
-      <div class="step-desc">Hit copy. Open Instagram. Paste. Done. No editing needed. Your posts are ready to go live.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">04</div>
-      <div class="step-icon">📈</div>
-      <div class="step-title">Watch your reach grow</div>
-      <div class="step-desc">Consistent, professional content every week means more followers, more engagement, more customers.</div>
+    <div class="platforms-grid reveal">
+      <div class="platform-card">
+        <div class="platform-icon">📸</div>
+        <div class="platform-name">Instagram</div>
+        <div class="platform-desc">Engaging captions with perfect formatting, line breaks, and 8–10 targeted hashtags to maximise reach and saves.</div>
+        <div class="content-card-tags">
+          <span class="ctag">Captions</span><span class="ctag">Hashtags</span><span class="ctag">Stories</span><span class="ctag">Reels hooks</span>
+        </div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">🎵</div>
+        <div class="platform-name">TikTok</div>
+        <div class="platform-desc">Hook-first video scripts designed to stop the scroll in the first 3 seconds, with trending sound suggestions and viral formats.</div>
+        <div class="content-card-tags">
+          <span class="ctag">Video scripts</span><span class="ctag">Hooks</span><span class="ctag">Sound ideas</span><span class="ctag">Trends</span>
+        </div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">👥</div>
+        <div class="platform-name">Facebook</div>
+        <div class="platform-desc">Community-focused, conversational posts that drive comments and shares — optimised for Facebook's algorithm and older demographics.</div>
+        <div class="content-card-tags">
+          <span class="ctag">Posts</span><span class="ctag">Events</span><span class="ctag">Community</span><span class="ctag">Offers</span>
+        </div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">▶️</div>
+        <div class="platform-name">YouTube</div>
+        <div class="platform-desc">60-second Shorts scripts, compelling titles, SEO-optimised descriptions and tags to grow your channel and get discovered.</div>
+        <div class="content-card-tags">
+          <span class="ctag">Shorts scripts</span><span class="ctag">Titles</span><span class="ctag">Descriptions</span><span class="ctag">Tags</span>
+        </div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">💼</div>
+        <div class="platform-name">LinkedIn</div>
+        <div class="platform-desc">Professional, insight-driven posts in story format that build authority, attract business customers and drive meaningful engagement.</div>
+        <div class="content-card-tags">
+          <span class="ctag">Thought leadership</span><span class="ctag">Stories</span><span class="ctag">B2B</span>
+        </div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">𝕏</div>
+        <div class="platform-name">X / Twitter</div>
+        <div class="platform-desc">Punchy single tweets and multi-tweet threads that spark conversation, drive retweets and build a loyal audience fast.</div>
+        <div class="content-card-tags">
+          <span class="ctag">Tweets</span><span class="ctag">Threads</span><span class="ctag">Engagement</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<section class="results-section">
-  <div class="results-inner">
-    <div class="reveal" style="text-align:center;margin-bottom:0;">
-      <div class="section-label">The numbers</div>
-      <h2 class="section-title">Results that speak<br/><em style="color:var(--accent)">for themselves</em></h2>
+<!-- LANGUAGES -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">7 languages</div>
+      <h2 class="section-title">Reach customers<br/><em>in their language</em></h2>
+      <p class="section-sub" style="margin:0 auto;">Native, natural content — not just Google Translated. Every post feels like a local wrote it.</p>
     </div>
-    <div class="results-grid reveal">
-      <div class="stat-card">
-        <div class="stat-num">10s</div>
-        <div class="stat-label">To generate a full week of posts</div>
+    <div class="lang-grid reveal">
+      <div class="lang-card"><div class="lang-flag">🇬🇧</div><div class="lang-name">English</div><div class="lang-native">English</div></div>
+      <div class="lang-card"><div class="lang-flag">🇪🇸</div><div class="lang-name">Spanish</div><div class="lang-native">Español</div></div>
+      <div class="lang-card"><div class="lang-flag">🇫🇷</div><div class="lang-name">French</div><div class="lang-native">Français</div></div>
+      <div class="lang-card"><div class="lang-flag">🇩🇪</div><div class="lang-name">German</div><div class="lang-native">Deutsch</div></div>
+      <div class="lang-card"><div class="lang-flag">🇮🇹</div><div class="lang-name">Italian</div><div class="lang-native">Italiano</div></div>
+      <div class="lang-card"><div class="lang-flag">🇵🇹</div><div class="lang-name">Portuguese</div><div class="lang-native">Português</div></div>
+      <div class="lang-card"><div class="lang-flag">🇳🇱</div><div class="lang-name">Dutch</div><div class="lang-native">Nederlands</div></div>
+      <div class="lang-card" style="background:rgba(99,102,241,.05);border-color:rgba(99,102,241,.2);">
+        <div class="lang-flag">🌍</div>
+        <div class="lang-name" style="color:var(--accent);">More coming</div>
+        <div class="lang-native">Arabic, Japanese...</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num">3hrs</div>
-        <div class="stat-label">Saved per week on average</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">Up and running<br/><em>in under 60 seconds</em></h2>
+    </div>
+    <div class="steps-row reveal">
+      <div class="step-box">
+        <div class="step-num">01</div>
+        <div class="step-icon">🏪</div>
+        <div class="step-title">Tell us about your business</div>
+        <div class="step-desc">Your name, type, location, and the platforms you use. Takes 30 seconds.</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num">4–7</div>
-        <div class="stat-label">Posts per week, your choice</div>
+      <div class="step-box">
+        <div class="step-num">02</div>
+        <div class="step-icon">🌍</div>
+        <div class="step-title">Choose your language & tone</div>
+        <div class="step-desc">Pick from 7 languages and set your brand personality — friendly, bold, luxe, or professional.</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num">£19</div>
-        <div class="stat-label">Per month — less than a coffee a day</div>
+      <div class="step-box">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚡</div>
+        <div class="step-title">AI generates your content</div>
+        <div class="step-desc">Platform-specific posts for every channel you selected. Ready in under 10 seconds.</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">04</div>
+        <div class="step-icon">📋</div>
+        <div class="step-title">Copy, paste & post</div>
+        <div class="step-desc">One tap to copy each post. Open your app, paste, post. Done.</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- WHO IS IT FOR -->
-<section class="who-section">
-  <div class="who-inner">
-    <div class="reveal">
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="reveal" style="text-align:center;">
       <div class="section-label">Who it's for</div>
-      <h2 class="section-title">Made for local<br/>business owners</h2>
-      <p class="section-sub">If you run a local business in Spain and want more customers — PostPilot is for you.</p>
+      <h2 class="section-title">Built for <em>every local business</em><br/>in every city in the world</h2>
     </div>
     <div class="who-grid reveal">
-      <div class="who-card">
-        <div class="who-emoji">🍽️</div>
-        <div class="who-title">Restaurants & Cafés</div>
-        <div class="who-desc">Daily specials, ambiance posts, weekend promotions — keep your regulars engaged and attract new ones.</div>
-        <div class="who-tag">🔥 Most popular</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">💪</div>
-        <div class="who-title">Gyms & Fitness Studios</div>
-        <div class="who-desc">Motivational posts, class schedules, member spotlights — build a community around your gym.</div>
-        <div class="who-tag">📈 Fast growing</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">✂️</div>
-        <div class="who-title">Hair & Beauty Salons</div>
-        <div class="who-desc">Before & after teasers, seasonal offers, tips and trends — fill your appointment book every week.</div>
-        <div class="who-tag">💜 Loved by owners</div>
-      </div>
+      <div class="who-card"><div class="who-emoji">🍽️</div><div class="who-title">Restaurants & Cafés</div><div class="who-desc">Daily specials, ambiance, events and weekend promos</div></div>
+      <div class="who-card"><div class="who-emoji">💪</div><div class="who-title">Gyms & Fitness</div><div class="who-desc">Motivational content, classes, transformations</div></div>
+      <div class="who-card"><div class="who-emoji">✂️</div><div class="who-title">Hair & Beauty</div><div class="who-desc">Before & after, offers, tips and trend content</div></div>
+      <div class="who-card"><div class="who-emoji">🛍️</div><div class="who-title">Retail & Boutiques</div><div class="who-desc">New arrivals, sales, styling and brand stories</div></div>
+      <div class="who-card"><div class="who-emoji">🏨</div><div class="who-title">Hotels & Tourism</div><div class="who-desc">Local tips, room features, seasonal offers</div></div>
+      <div class="who-card"><div class="who-emoji">🍸</div><div class="who-title">Bars & Nightlife</div><div class="who-desc">Events, cocktails, atmosphere and weekly specials</div></div>
+      <div class="who-card"><div class="who-emoji">🧘</div><div class="who-title">Wellness & Spas</div><div class="who-desc">Mindfulness, treatments, tips and calm content</div></div>
+      <div class="who-card"><div class="who-emoji">🏥</div><div class="who-title">Clinics & Health</div><div class="who-desc">Education, tips, team spotlights and awareness</div></div>
     </div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="testi-section">
-  <div class="testi-inner">
+<section>
+  <div class="section-wrap">
     <div class="reveal" style="text-align:center;">
       <div class="section-label">Testimonials</div>
-      <h2 class="section-title">Local businesses<br/>love PostPilot</h2>
+      <h2 class="section-title">Businesses worldwide<br/><em>love PostPilot</em></h2>
     </div>
     <div class="testi-grid reveal">
       <div class="testi-card">
         <div class="stars">★★★★★</div>
-        <p class="testi-quote">"I was spending hours every week stressing about what to post. Now I just open the app, click generate, and my whole week is sorted in 30 seconds. Game changer."</p>
+        <p class="testi-quote">"We post on Instagram, TikTok and Facebook. PostPilot generates everything in one go. What used to take me half a day now takes 2 minutes. Incredible."</p>
         <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#FF6B35,#ff9a6b);">🍽️</div>
-          <div>
-            <div class="testi-name">Maria G.</div>
-            <div class="testi-role">Restaurant owner, Valencia</div>
-          </div>
+          <div class="testi-av" style="background:linear-gradient(135deg,#6366f1,#a855f7);">🍽️</div>
+          <div><div class="testi-name">Marco B.</div><div class="testi-role">Restaurant owner, Milan</div></div>
         </div>
       </div>
       <div class="testi-card">
         <div class="stars">★★★★★</div>
-        <p class="testi-quote">"My Instagram went from dead to 400 new followers in a month. The posts actually sound like me — not some robot. My clients keep asking who does my social media!"</p>
+        <p class="testi-quote">"The TikTok scripts are brilliant. My videos went from 200 views to 15,000 average because the hooks actually stop people scrolling. Worth every penny."</p>
         <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#C77DFF,#a855f7);">✂️</div>
-          <div>
-            <div class="testi-name">Sofia M.</div>
-            <div class="testi-role">Salon owner, Barcelona</div>
-          </div>
+          <div class="testi-av" style="background:linear-gradient(135deg,#f97316,#e879f9);">💪</div>
+          <div><div class="testi-name">Sarah M.</div><div class="testi-role">Gym owner, Dublin</div></div>
         </div>
       </div>
       <div class="testi-card">
         <div class="stars">★★★★★</div>
-        <p class="testi-quote">"£19 a month is nothing compared to what a social media manager would charge. The English captions are perfect — great for attracting international clients to our gym."</p>
+        <p class="testi-quote">"I post in both French and English for my Paris salon. The French content is completely natural — my French clients think I wrote it myself. C'est parfait!"</p>
         <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#00C897,#00a077);">💪</div>
-          <div>
-            <div class="testi-name">Carlos R.</div>
-            <div class="testi-role">Gym owner, Málaga</div>
-          </div>
+          <div class="testi-av" style="background:linear-gradient(135deg,#22d3a0,#38bdf8);">✂️</div>
+          <div><div class="testi-name">Amélie D.</div><div class="testi-role">Salon owner, Paris</div></div>
         </div>
       </div>
     </div>
@@ -694,122 +574,147 @@
 </section>
 
 <!-- PRICING -->
-<section id="pricing" class="pricing-section">
-  <div class="pricing-inner">
-    <div class="reveal">
+<section id="pricing" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="reveal" style="text-align:center;">
       <div class="section-label">Pricing</div>
-      <h2 class="section-title">Simple, honest pricing</h2>
-      <p class="section-sub" style="margin:0 auto;">No hidden fees. No long contracts. Cancel any time.</p>
+      <h2 class="section-title">Simple pricing.<br/><em>Massive value.</em></h2>
+      <p class="section-sub" style="margin:0 auto;">No hidden fees. No contracts. Cancel any time. Start free today.</p>
     </div>
-
     <div class="pricing-grid reveal">
 
-      <!-- Free -->
       <div class="price-card">
-        <div class="price-plan">Free</div>
-        <div class="price-amount">£0 <span>/ month</span></div>
-        <div class="price-desc">Try it out, no card needed</div>
+        <div class="price-tier">Free</div>
+        <div class="price-amount">€0 <span>/ month</span></div>
+        <div class="price-desc">Try it — no card needed</div>
         <ul class="price-features">
-          <li><span class="check">✓</span> 1 week of posts per month</li>
-          <li><span class="check">✓</span> Up to 4 posts per week</li>
-          <li><span class="check">✓</span> All business types</li>
-          <li><span class="check">✓</span> English captions</li>
-          <li><span class="cross">✗</span> Unlimited weeks</li>
+          <li><span class="check">✓</span> 1 generation per month</li>
+          <li><span class="check">✓</span> All 6 platforms</li>
+          <li><span class="check">✓</span> 3 posts per platform</li>
+          <li><span class="check">✓</span> 3 languages</li>
+          <li><span class="cross">✗</span> Unlimited generations</li>
+          <li><span class="cross">✗</span> All 7 languages</li>
           <li><span class="cross">✗</span> Priority generation</li>
         </ul>
         <a href="#" class="price-btn price-btn-ghost">Get started free</a>
       </div>
 
-      <!-- Pro -->
       <div class="price-card featured">
-        <div class="featured-badge">⭐ Most popular</div>
-        <div class="price-plan">Pro</div>
-        <div class="price-amount">£19 <span>/ month</span></div>
-        <div class="price-desc">Unlimited posts, all features</div>
+        <div class="featured-pill">⭐ Most popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">€19 <span>/ month</span></div>
+        <div class="price-desc">Unlimited content, all platforms</div>
         <ul class="price-features">
-          <li><span class="check">✓</span> Unlimited weeks of posts</li>
-          <li><span class="check">✓</span> Up to 7 posts per week</li>
-          <li><span class="check">✓</span> All business types</li>
-          <li><span class="check">✓</span> English + Spanish captions</li>
+          <li><span class="check">✓</span> Unlimited generations</li>
+          <li><span class="check">✓</span> All 6 platforms</li>
+          <li><span class="check">✓</span> Up to 7 posts per platform</li>
+          <li><span class="check">✓</span> All 7 languages</li>
           <li><span class="check">✓</span> Priority AI generation</li>
-          <li><span class="check">✓</span> Monthly content strategy</li>
+          <li><span class="check">✓</span> Best posting times</li>
+          <li><span class="check">✓</span> Monthly strategy included</li>
         </ul>
-        <a href="#" class="price-btn price-btn-primary">Start Pro — £19/month</a>
+        <a href="#" class="price-btn price-btn-main">Start Pro — €19/month</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-tier">Agency</div>
+        <div class="price-amount">€79 <span>/ month</span></div>
+        <div class="price-desc">Manage multiple businesses</div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> Up to 10 business profiles</li>
+          <li><span class="check">✓</span> White-label ready</li>
+          <li><span class="check">✓</span> Client management dashboard</li>
+          <li><span class="check">✓</span> Priority support</li>
+          <li><span class="check">✓</span> Custom tone profiles</li>
+          <li><span class="check">✓</span> Bulk generation</li>
+        </ul>
+        <a href="#" class="price-btn price-btn-dark">Contact us</a>
       </div>
 
     </div>
-
-    <p class="reveal" style="margin-top:24px;font-size:14px;color:var(--muted);text-align:center;">
-      ✓ Cancel anytime &nbsp;·&nbsp; ✓ No contracts &nbsp;·&nbsp; ✓ Instant access
+    <p class="reveal" style="text-align:center;margin-top:20px;font-size:13px;color:var(--muted);">
+      ✓ Cancel anytime &nbsp;·&nbsp; ✓ No contracts &nbsp;·&nbsp; ✓ Instant access &nbsp;·&nbsp; ✓ Works in 190+ countries
     </p>
   </div>
 </section>
 
 <!-- FAQ -->
-<section class="faq-section">
-  <div class="faq-inner">
-    <div class="reveal" style="text-align:center;margin-bottom:50px;">
+<section id="faq">
+  <div class="section-wrap">
+    <div class="reveal" style="text-align:center;">
       <div class="section-label">FAQ</div>
-      <h2 class="section-title">Questions? We've got answers.</h2>
+      <h2 class="section-title">Questions answered</h2>
     </div>
-
-    <div class="reveal">
+    <div class="faq-wrap reveal">
       <div class="faq-item">
-        <div class="faq-q">Do I need to know anything about social media? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Not at all. If you can copy and paste text, you can use PostPilot. We handle all the writing — you just post it.</div>
+        <div class="faq-q">What platforms does PostPilot support? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Instagram, TikTok, Facebook, YouTube, LinkedIn and X (Twitter). Each platform gets content optimised specifically for its format, audience and algorithm — not just the same post duplicated.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Why are the posts in English? <span class="faq-icon">+</span></div>
-        <div class="faq-a">English posts reach a wider audience — including tourists and international customers in Spain. Pro subscribers can also get Spanish captions.</div>
+        <div class="faq-q">Which languages are available? <span class="faq-icon">+</span></div>
+        <div class="faq-a">English, Spanish, French, German, Italian, Portuguese and Dutch. Content is written natively for each language — not translated. Arabic and Japanese are coming soon.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Will the posts sound like me? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Yes — you choose your brand vibe (friendly, bold, luxury, or playful) and the AI tailors the tone to match your business personality every time.</div>
+        <div class="faq-q">Do I need any social media or marketing experience? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Absolutely not. If you can copy and paste, you can use PostPilot. Fill in your business details, hit generate, copy the posts and paste them into your social media apps. That's it.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Can I cancel any time? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Absolutely. No contracts, no commitments. Cancel with one click from your account settings and you won't be charged again.</div>
+        <div class="faq-q">Will the content sound like my business? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. You choose your brand tone (friendly, bold, luxe, professional, etc.) and the AI tailors everything to match. The content references your specific business name, location and any special details you add.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">How is this different from ChatGPT? <span class="faq-icon">+</span></div>
-        <div class="faq-a">ChatGPT is a general tool — you'd need to write your own prompts every time and figure out the format yourself. PostPilot is built specifically for local businesses, generates posts in the right Instagram format with hashtags, and remembers your business details so every week takes just seconds.</div>
+        <div class="faq-q">How is this different from just using ChatGPT? <span class="faq-icon">+</span></div>
+        <div class="faq-a">ChatGPT is a general tool — you'd have to write your own prompts, figure out the right format for each platform, add hashtags manually, and start from scratch every time. PostPilot is built specifically for social media content — it knows the right format, character limits, hashtag strategy and best practices for every platform automatically. It saves you hours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I cancel anytime? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes — no contracts, no commitments. Cancel with one click and you won't be charged again. We're confident you'll stay because PostPilot genuinely saves you time every week.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
+<!-- CTA -->
 <section class="cta-section">
   <div class="cta-glow"></div>
-  <h2>Ready to stop<br/><em style="color:var(--accent)">stressing about Instagram?</em></h2>
-  <p>Join local businesses across Spain posting consistently — without the effort.</p>
-  <a href="#pricing" class="btn-primary" style="display:inline-block;">Get started free — takes 2 minutes</a>
+  <h2>Stop stressing about<br/><em style="background:linear-gradient(135deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">what to post.</em></h2>
+  <p>Join thousands of businesses generating professional content across every platform — in seconds.</p>
+  <a href="#pricing" class="btn-primary" style="display:inline-block;font-size:17px;padding:18px 40px;">
+    Start for Free — No card needed →
+  </a>
+  <p style="margin-top:16px;font-size:13px;color:var(--muted2);">✓ Works in 190+ countries &nbsp;·&nbsp; ✓ 6 platforms &nbsp;·&nbsp; ✓ 7 languages &nbsp;·&nbsp; ✓ Cancel anytime</p>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© 2026 PostPilot AI · Built for local businesses in Spain</div>
-  <div class="footer-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
+  <div class="footer-inner">
+    <a href="#" class="footer-logo">
+      <div class="logo-mark" style="width:30px;height:30px;border-radius:8px;font-size:15px;">🚀</div>
+      <div class="logo-name" style="font-size:15px;">PostPilot <span>AI</span></div>
+    </a>
+    <div class="footer-copy">© 2026 PostPilot AI · Global Social Media Content Generator</div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
   </div>
 </footer>
 
 <script>
   // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      if(entry.isIntersecting){
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+  }, {threshold: 0.08});
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // FAQ toggle
+  // FAQ
   document.querySelectorAll('.faq-item').forEach(item => {
     item.querySelector('.faq-q').addEventListener('click', () => {
       item.classList.toggle('open');
