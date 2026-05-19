@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PostPilot AI — Instagram Posts on Autopilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,300;1,9..144,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #07080a;
+    --bg2: #0d0f12;
+    --border: #151820;
+    --text: #eeeae2;
+    --muted: #4a4f5a;
+    --accent: #FF6B35;
+    --accent2: #C77DFF;
+    --green: #00C897;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(7,8,10,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .logo-mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px;
+    color: var(--text); letter-spacing: -0.01em;
+  }
+  .logo-text span { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent); color: #fff; border: none;
+    padding: 10px 22px; border-radius: 8px;
+    font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+  }
+
+  .hero-glow {
+    position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute; top: 30%; left: 30%;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(199,125,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.2);
+    padding: 8px 18px; border-radius: 30px;
+    font-size: 13px; color: var(--accent); font-weight: 500;
+    margin-bottom: 28px;
+    animation: fadeUp 0.7s ease both;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 8vw, 76px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero h1 .purple { color: var(--accent2); }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--muted); max-width: 520px;
+    line-height: 1.7; margin-bottom: 40px;
+    animation: fadeUp 0.7s 0.2s ease both;
+    font-weight: 400;
+  }
+
+  .hero-actions {
+    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 56px;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent); color: #fff; border: none;
+    padding: 16px 32px; border-radius: 12px;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 16px;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 0 40px rgba(255,107,53,0.3);
+  }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 8px 40px rgba(255,107,53,0.4); }
+
+  .btn-ghost {
+    background: transparent; color: var(--text);
+    border: 1.5px solid var(--border);
+    padding: 16px 32px; border-radius: 12px;
+    font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 16px;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: #333; }
+
+  /* social proof strip */
+  .hero-proof {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.7s 0.4s ease both;
+  }
+  .proof-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .proof-item strong { color: var(--text); }
+  .proof-divider { width: 1px; height: 16px; background: var(--border); }
+
+  /* ── MOCKUP ── */
+  .mockup-section {
+    padding: 0 24px 100px;
+    display: flex; justify-content: center;
+    position: relative;
+  }
+
+  .phone-mockup {
+    width: 100%; max-width: 340px;
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+    animation: floatPhone 4s ease-in-out infinite;
+  }
+  @keyframes floatPhone {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .phone-notch {
+    height: 28px; background: #000;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .notch-pill { width: 80px; height: 10px; background: #111; border-radius: 5px; }
+
+  .phone-content { padding: 16px; }
+  .phone-post {
+    background: #0a0c0f; border: 1px solid #1a1d22;
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
+  }
+  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .post-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .post-name { font-size: 12px; font-weight: 600; }
+  .post-day { font-size: 10px; color: var(--muted); }
+  .post-text { font-size: 12px; color: #aaa; line-height: 1.6; margin-bottom: 8px; }
+  .post-tags { font-size: 11px; color: #4a7abb; }
+  .post-label { display: inline-block; font-size: 10px; background: rgba(255,107,53,0.1); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 600; float: right; margin-top: -4px; }
+
+  /* ── SECTION SHARED ── */
+  section { position: relative; z-index: 1; }
+
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(30px, 5vw, 50px);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .section-sub { font-size: 17px; color: var(--muted); max-width: 500px; line-height: 1.7; }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { padding: 100px 24px; max-width: 1000px; margin: 0 auto; }
+
+  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; margin-top: 60px; background: var(--border); border-radius: 20px; overflow: hidden; }
+
+  .step-card {
+    background: var(--bg2); padding: 36px 28px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .step-card:hover { background: #0f1115; }
+
+  .step-num {
+    font-family: 'Fraunces', serif; font-size: 56px; font-weight: 800;
+    color: var(--border); line-height: 1; margin-bottom: 20px;
+    transition: color 0.2s;
+  }
+  .step-card:hover .step-num { color: rgba(255,107,53,0.15); }
+
+  .step-icon { font-size: 28px; margin-bottom: 14px; }
+  .step-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+  .step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── RESULTS ── */
+  .results-section { padding: 100px 24px; }
+  .results-inner { max-width: 1000px; margin: 0 auto; }
+
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 60px; }
+
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 18px; padding: 32px 24px; text-align: center;
+    transition: all 0.2s;
+  }
+  .stat-card:hover { border-color: rgba(255,107,53,0.3); transform: translateY(-4px); }
+
+  .stat-num {
+    font-family: 'Fraunces', serif; font-size: 48px; font-weight: 800;
+    line-height: 1; margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 14px; color: var(--muted); }
+
+  /* ── WHO IS IT FOR ── */
+  .who-section { padding: 100px 24px; }
+  .who-inner { max-width: 1000px; margin: 0 auto; }
+
+  .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 60px; }
+
+  .who-card {
+    background: var(--bg2); border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 32px;
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .who-card:hover { border-color: rgba(199,125,255,0.3); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+
+  .who-emoji { font-size: 40px; margin-bottom: 16px; }
+  .who-title { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+  .who-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+
+  .who-tag {
+    display: inline-block; background: rgba(199,125,255,0.08);
+    border: 1px solid rgba(199,125,255,0.15); color: var(--accent2);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testi-section { padding: 100px 24px; }
+  .testi-inner { max-width: 1000px; margin: 0 auto; }
+  .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 60px; }
+
+  .testi-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px;
+  }
+
+  .stars { color: #FFB800; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+  .testi-quote { font-size: 15px; color: #c0bdb8; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .testi-name { font-weight: 600; font-size: 14px; }
+  .testi-role { font-size: 12px; color: var(--muted); }
+
+  /* ── PRICING ── */
+  .pricing-section { padding: 100px 24px; }
+  .pricing-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 60px; text-align: left; }
+
+  .price-card {
+    background: var(--bg2); border: 1.5px solid var(--border);
+    border-radius: 24px; padding: 36px;
+    position: relative; transition: all 0.25s;
+  }
+  .price-card:hover { transform: translateY(-4px); }
+  .price-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(160deg, rgba(255,107,53,0.05), var(--bg2));
+    box-shadow: 0 0 60px rgba(255,107,53,0.1);
+  }
+
+  .featured-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+    padding: 4px 16px; border-radius: 20px; letter-spacing: 0.08em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+
+  .price-plan { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .price-amount { font-family: 'Fraunces', serif; font-size: 52px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .price-amount span { font-size: 22px; font-weight: 400; color: var(--muted); }
+  .price-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+  .price-features { list-style: none; margin-bottom: 32px; }
+  .price-features li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .price-features li:last-child { border-bottom: none; }
+  .check { color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .cross { color: #333; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  .price-btn {
+    display: block; width: 100%; text-align: center;
+    padding: 14px; border-radius: 12px; text-decoration: none;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px;
+    transition: all 0.2s; cursor: pointer; border: none;
+  }
+  .price-btn-primary { background: var(--accent); color: #fff; }
+  .price-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .price-btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+  .price-btn-ghost:hover { border-color: #333; }
+
+  /* ── FAQ ── */
+  .faq-section { padding: 100px 24px; }
+  .faq-inner { max-width: 680px; margin: 0 auto; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border); padding: 24px 0; cursor: pointer;
+  }
+  .faq-item:first-child { border-top: 1px solid var(--border); }
+
+  .faq-q {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    font-weight: 600; font-size: 16px;
+  }
+  .faq-icon { color: var(--accent); font-size: 22px; flex-shrink: 0; transition: transform 0.2s; }
+  .faq-a { font-size: 15px; color: var(--muted); line-height: 1.7; margin-top: 14px; display: none; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+  /* ── CTA FOOTER ── */
+  .cta-section {
+    padding: 100px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse, rgba(255,107,53,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 6vw, 60px);
+    font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+    margin-bottom: 20px; position: relative;
+  }
+  .cta-section p { font-size: 18px; color: var(--muted); margin-bottom: 40px; position: relative; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .footer-copy { font-size: 13px; color: var(--muted); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap { overflow: hidden; padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .marquee-track {
+    display: flex; gap: 48px;
+    animation: marquee 20s linear infinite;
+    width: max-content;
+  }
+  .marquee-item { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--muted); white-space: nowrap; }
+  .marquee-item span { font-size: 20px; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    nav { padding: 14px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .steps-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">📱</div>
+    <div class="logo-text">PostPilot <span>AI</span></div>
+  </a>
+  <a href="#pricing" class="nav-cta">Start Free →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Built for local businesses in Spain
+  </div>
+
+  <h1>
+    Your Instagram.<br/>
+    <em>Written for you.</em><br/>
+    <span class="purple">Every week.</span>
+  </h1>
+
+  <p class="hero-sub">
+    PostPilot AI generates professional English Instagram posts for your restaurant, gym, or salon — in seconds. Just copy, paste, and post.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">Start for Free — No card needed</a>
+    <a href="#how" class="btn-ghost">See how it works ↓</a>
+  </div>
+
+  <div class="hero-proof">
+    <div class="proof-item"><span>⭐⭐⭐⭐⭐</span> <strong>4.9/5</strong> rating</div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">🏪 Built for <strong>restaurants, gyms & salons</strong></div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">✓ Posts in <strong>English</strong></div>
+  </div>
+</section>
+
+<!-- PHONE MOCKUP -->
+<div class="mockup-section">
+  <div class="phone-mockup">
+    <div class="phone-notch"><div class="notch-pill"></div></div>
+    <div class="phone-content">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;">This Week's Posts</div>
+        <div style="font-size:11px;color:#4a4f5a;background:#0d0f12;padding:4px 10px;border-radius:6px;">Café Paloma · Valencia</div>
+      </div>
+
+      <div class="phone-post">
+        <div class="post-header">
+          <div class="post-avatar">☕</div>
+          <div>
+            <div class="post-name">Café Paloma</div>
+            <div class="post-day">Monday</div>
+          </div>
+          <div class="post-label">✓ Ready</div>
+        </div>
+        <p class="post-text">Monday mornings hit different when you start them right ☀️ Come in for your favourite coffee and a fresh croissant — because you deserve a great start to the week.</p>
+        <p class="post-tags">#MondayMood #CaféValencia #CoffeeLover</p>
+      </div>
+
+      <div class="phone-post">
+        <div class="post-header">
+          <div class="post-avatar">🌿</div>
+          <div>
+            <div class="post-name">Café Paloma</div>
+            <div class="post-day">Wednesday</div>
+          </div>
+          <div class="post-label">✓ Ready</div>
+        </div>
+        <p class="post-text">Mid-week treat? Yes please 🙌 Our homemade tapas are on the menu today. Stop by and let us take care of lunch — your colleagues will be jealous.</p>
+        <p class="post-tags">#ValenciaEats #LunchTime #TapasLovers</p>
+      </div>
+
+      <div style="background:#0a0c0f;border:1px dashed #1a1d22;border-radius:14px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:#4a4f5a;">+ 2 more posts this week</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><span>🍽️</span> Restaurant owners</div>
+    <div class="marquee-item"><span>💪</span> Gyms & studios</div>
+    <div class="marquee-item"><span>✂️</span> Hair salons</div>
+    <div class="marquee-item"><span>💅</span> Beauty clinics</div>
+    <div class="marquee-item"><span>☕</span> Coffee shops</div>
+    <div class="marquee-item"><span>🏊</span> Swim schools</div>
+    <div class="marquee-item"><span>🧘</span> Yoga studios</div>
+    <div class="marquee-item"><span>🍕</span> Pizzerias</div>
+    <div class="marquee-item"><span>🍽️</span> Restaurant owners</div>
+    <div class="marquee-item"><span>💪</span> Gyms & studios</div>
+    <div class="marquee-item"><span>✂️</span> Hair salons</div>
+    <div class="marquee-item"><span>💅</span> Beauty clinics</div>
+    <div class="marquee-item"><span>☕</span> Coffee shops</div>
+    <div class="marquee-item"><span>🏊</span> Swim schools</div>
+    <div class="marquee-item"><span>🧘</span> Yoga studios</div>
+    <div class="marquee-item"><span>🍕</span> Pizzerias</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="how-section">
+  <div class="reveal">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Three steps.<br/>Zero effort.</h2>
+    <p class="section-sub">You spend 2 minutes setting up. We do the rest, every single week.</p>
+  </div>
+
+  <div class="steps-grid reveal">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">🏪</div>
+      <div class="step-title">Tell us about your business</div>
+      <div class="step-desc">Enter your name, type of business, and the vibe you want — friendly, bold, luxury, or fun.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">⚡</div>
+      <div class="step-title">AI writes your posts</div>
+      <div class="step-desc">In seconds, PostPilot generates a full week of tailored English Instagram captions for your business.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">📋</div>
+      <div class="step-title">Copy, paste & post</div>
+      <div class="step-desc">Hit copy. Open Instagram. Paste. Done. No editing needed. Your posts are ready to go live.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">📈</div>
+      <div class="step-title">Watch your reach grow</div>
+      <div class="step-desc">Consistent, professional content every week means more followers, more engagement, more customers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="results-section">
+  <div class="results-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:0;">
+      <div class="section-label">The numbers</div>
+      <h2 class="section-title">Results that speak<br/><em style="color:var(--accent)">for themselves</em></h2>
+    </div>
+    <div class="results-grid reveal">
+      <div class="stat-card">
+        <div class="stat-num">10s</div>
+        <div class="stat-label">To generate a full week of posts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3hrs</div>
+        <div class="stat-label">Saved per week on average</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">4–7</div>
+        <div class="stat-label">Posts per week, your choice</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">£19</div>
+        <div class="stat-label">Per month — less than a coffee a day</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS IT FOR -->
+<section class="who-section">
+  <div class="who-inner">
+    <div class="reveal">
+      <div class="section-label">Who it's for</div>
+      <h2 class="section-title">Made for local<br/>business owners</h2>
+      <p class="section-sub">If you run a local business in Spain and want more customers — PostPilot is for you.</p>
+    </div>
+    <div class="who-grid reveal">
+      <div class="who-card">
+        <div class="who-emoji">🍽️</div>
+        <div class="who-title">Restaurants & Cafés</div>
+        <div class="who-desc">Daily specials, ambiance posts, weekend promotions — keep your regulars engaged and attract new ones.</div>
+        <div class="who-tag">🔥 Most popular</div>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">💪</div>
+        <div class="who-title">Gyms & Fitness Studios</div>
+        <div class="who-desc">Motivational posts, class schedules, member spotlights — build a community around your gym.</div>
+        <div class="who-tag">📈 Fast growing</div>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">✂️</div>
+        <div class="who-title">Hair & Beauty Salons</div>
+        <div class="who-desc">Before & after teasers, seasonal offers, tips and trends — fill your appointment book every week.</div>
+        <div class="who-tag">💜 Loved by owners</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="testi-inner">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">Testimonials</div>
+      <h2 class="section-title">Local businesses<br/>love PostPilot</h2>
+    </div>
+    <div class="testi-grid reveal">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"I was spending hours every week stressing about what to post. Now I just open the app, click generate, and my whole week is sorted in 30 seconds. Game changer."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#FF6B35,#ff9a6b);">🍽️</div>
+          <div>
+            <div class="testi-name">Maria G.</div>
+            <div class="testi-role">Restaurant owner, Valencia</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"My Instagram went from dead to 400 new followers in a month. The posts actually sound like me — not some robot. My clients keep asking who does my social media!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#C77DFF,#a855f7);">✂️</div>
+          <div>
+            <div class="testi-name">Sofia M.</div>
+            <div class="testi-role">Salon owner, Barcelona</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"£19 a month is nothing compared to what a social media manager would charge. The English captions are perfect — great for attracting international clients to our gym."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#00C897,#00a077);">💪</div>
+          <div>
+            <div class="testi-name">Carlos R.</div>
+            <div class="testi-role">Gym owner, Málaga</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="pricing-inner">
+    <div class="reveal">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, honest pricing</h2>
+      <p class="section-sub" style="margin:0 auto;">No hidden fees. No long contracts. Cancel any time.</p>
+    </div>
+
+    <div class="pricing-grid reveal">
+
+      <!-- Free -->
+      <div class="price-card">
+        <div class="price-plan">Free</div>
+        <div class="price-amount">£0 <span>/ month</span></div>
+        <div class="price-desc">Try it out, no card needed</div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> 1 week of posts per month</li>
+          <li><span class="check">✓</span> Up to 4 posts per week</li>
+          <li><span class="check">✓</span> All business types</li>
+          <li><span class="check">✓</span> English captions</li>
+          <li><span class="cross">✗</span> Unlimited weeks</li>
+          <li><span class="cross">✗</span> Priority generation</li>
+        </ul>
+        <a href="#" class="price-btn price-btn-ghost">Get started free</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="price-card featured">
+        <div class="featured-badge">⭐ Most popular</div>
+        <div class="price-plan">Pro</div>
+        <div class="price-amount">£19 <span>/ month</span></div>
+        <div class="price-desc">Unlimited posts, all features</div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Unlimited weeks of posts</li>
+          <li><span class="check">✓</span> Up to 7 posts per week</li>
+          <li><span class="check">✓</span> All business types</li>
+          <li><span class="check">✓</span> English + Spanish captions</li>
+          <li><span class="check">✓</span> Priority AI generation</li>
+          <li><span class="check">✓</span> Monthly content strategy</li>
+        </ul>
+        <a href="#" class="price-btn price-btn-primary">Start Pro — £19/month</a>
+      </div>
+
+    </div>
+
+    <p class="reveal" style="margin-top:24px;font-size:14px;color:var(--muted);text-align:center;">
+      ✓ Cancel anytime &nbsp;·&nbsp; ✓ No contracts &nbsp;·&nbsp; ✓ Instant access
+    </p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:50px;">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Questions? We've got answers.</h2>
+    </div>
+
+    <div class="reveal">
+      <div class="faq-item">
+        <div class="faq-q">Do I need to know anything about social media? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Not at all. If you can copy and paste text, you can use PostPilot. We handle all the writing — you just post it.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why are the posts in English? <span class="faq-icon">+</span></div>
+        <div class="faq-a">English posts reach a wider audience — including tourists and international customers in Spain. Pro subscribers can also get Spanish captions.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Will the posts sound like me? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes — you choose your brand vibe (friendly, bold, luxury, or playful) and the AI tailors the tone to match your business personality every time.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I cancel any time? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Absolutely. No contracts, no commitments. Cancel with one click from your account settings and you won't be charged again.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How is this different from ChatGPT? <span class="faq-icon">+</span></div>
+        <div class="faq-a">ChatGPT is a general tool — you'd need to write your own prompts every time and figure out the format yourself. PostPilot is built specifically for local businesses, generates posts in the right Instagram format with hashtags, and remembers your business details so every week takes just seconds.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2>Ready to stop<br/><em style="color:var(--accent)">stressing about Instagram?</em></h2>
+  <p>Join local businesses across Spain posting consistently — without the effort.</p>
+  <a href="#pricing" class="btn-primary" style="display:inline-block;">Get started free — takes 2 minutes</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 PostPilot AI · Built for local businesses in Spain</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // FAQ toggle
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>
